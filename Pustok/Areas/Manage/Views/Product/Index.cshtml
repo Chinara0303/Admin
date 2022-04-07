@@ -1,0 +1,56 @@
+﻿
+@model IEnumerable<Product>
+@{
+    int count = 0;
+ }
+  <!-- Page Heading -->
+<div class="row">
+    <div class="col-lg-10">
+        <h1 class="h3 mb-2 text-gray-800">Product Table</h1>
+    </div>
+    <div class="col-lg-2">
+        <a class="btn btn-success" asp-action="Create">Create Product</a>
+    </div>
+</div>
+
+
+
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+               <thead>
+                   <tr>
+                       <th>#</th>
+                       <th>Name</th>
+                       <th>Price</th>
+                       <th>Discount Price</th>
+                   </tr>
+               </thead>
+               <tbody>
+                   @foreach (Product product in Model)
+                    {
+                       count++;
+                        <tr>
+                            <td>
+                                @count
+                            </td>
+                            <td>
+                                @product.Title
+                            </td>
+                            <td>
+                                @product.Price
+                            </td>
+                            <td>
+                                @product.DiscountPrice
+                            </td>
+                        </tr>
+                    }
+
+               </tbody>
+            </table>
+        </div>
+    </div>
+</div>
