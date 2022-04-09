@@ -17,13 +17,13 @@ namespace Pustok.Models
         [Required(ErrorMessage ="Mecburidi")]
         [StringLength(255,ErrorMessage ="Heddi  awama ay qa")]
         public string Title { get; set; }
-        [Required]
+        //[Required]
         [StringLength(255)]
         public string MainImage { get; set; }
         //[Required]
         [StringLength(255)]
         public string HoverImage { get; set; }
-        //[Required]
+        [Required]
         //[Column("ProductPrice",TypeName ="money")]
         [Column(TypeName = "decimal(18,2)")]
         public double Price { get; set; }
