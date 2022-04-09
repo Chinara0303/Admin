@@ -30,9 +30,9 @@ namespace Pustok.Controllers
             {
                 Sliders = await _context.Sliders.ToListAsync(),
                 UpPromotions = await _context.UpPromotions.ToListAsync(),
-                Feature = await _context.Products.Include(p => p.Author).Include(p => p.Genre).Where(p => p.IsFeature).OrderByDescending(p => p.Id).Take(8).ToListAsync(),
-                Arrival = await _context.Products.Include(p => p.Author).Include(p => p.Genre).Where(p => p.IsArrival).OrderByDescending(p => p.Id).Take(8).ToListAsync(),
-                MostView = await _context.Products.Include(p => p.Author).Include(p => p.Genre).Where(p => p.IsMostView).OrderByDescending(p => p.Id).Take(8).ToListAsync()
+                Feature = await _context.Products.Include(p => p.Author).Where(p=>!p.IsDeleted).Include(p => p.Genre).Where(p => p.IsFeature).OrderByDescending(p => p.Id).Take(8).ToListAsync(),
+                Arrival = await _context.Products.Include(p => p.Author).Where(p => !p.IsDeleted).Include(p => p.Genre).Where(p => p.IsArrival).OrderByDescending(p => p.Id).Take(8).ToListAsync(),
+                MostView = await _context.Products.Include(p => p.Author).Where(p => !p.IsDeleted).Include(p => p.Genre).Where(p => p.IsMostView).OrderByDescending(p => p.Id).Take(8).ToListAsync()
             };
 
             return View(homeVm);

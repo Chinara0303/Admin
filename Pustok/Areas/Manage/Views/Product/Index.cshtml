@@ -27,6 +27,7 @@
                        <th>Name</th>
                        <th>Price</th>
                        <th>Discount Price</th>
+                       <th>Settings</th>
                    </tr>
                </thead>
                <tbody>
@@ -46,6 +47,11 @@
                             <td>
                                 @product.DiscountPrice
                             </td>
+                            <td>
+                                <a class="btn btn-primary" asp-action="Detail" asp-route-id="@product.Id">Detail</a>   
+                                <a class="btn btn-warning" asp-action="Update" asp-route-id="@product.Id">Update</a>
+                                <a id="deletesweet" class="btn btn-danger"   asp-action="Delete" asp-route-id="@product.Id">Delete</a>
+                            </td>
                         </tr>
                     }
 
@@ -54,3 +60,7 @@
         </div>
     </div>
 </div>
+
+@section Sweet{ 
+    <script src="~/manage/js/sweetalert.js"></script>
+}

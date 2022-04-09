@@ -1,16 +1,16 @@
 ﻿@model Product
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Update";
     Layout = "~/Areas/Manage/Views/Shared/_Layout.cshtml";
 }
 <div class="row">
     <div class="col-lg-12">
-        <h1>Create Product</h1>
+        <h1>Update Product</h1>
     </div>
 </div>
 <div class="row justify-content-lg-center">
     <div class="col-lg-8">
-        <form method="post" enctype="multipart/form-data">
+        <form asp-action="CreateProduct">
             <div class="form-group">
                 <label asp-for="Title"></label>
                 <input asp-for="Title" class="form-control" placeholder="Enter Title">
@@ -27,14 +27,14 @@
                 <span asp-validation-for="DiscountPrice" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="MainImgFile"></label>
-                <input asp-for="MainImgFile" class="form-control" placeholder="Enter MainImage">
-                <span asp-validation-for="MainImgFile" class="text-danger"></span>
+                <label asp-for="MainImage"></label>
+                <input asp-for="MainImage" class="form-control" placeholder="Enter MainImage">
+                <span asp-validation-for="MainImage" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="HoverImgFile"></label>
-                <input asp-for="HoverImgFile" class="form-control" placeholder="Enter HoverImage">
-                <span asp-validation-for="HoverImgFile" class="text-danger"></span>
+                <label asp-for="HoverImage"></label>
+                <input asp-for="HoverImage" class="form-control" placeholder="Enter HoverImage">
+                <span asp-validation-for="HoverImage" class="text-danger"></span>
             </div>
             <div class="form-check">
                 <input asp-for="IsFeature" class="form-check-input">
@@ -53,9 +53,18 @@
                 <select asp-for="AuthorId" class="form-control">
                     <option selected>Choose...</option>
                     @foreach (Author author in ViewBag.Authors)
-                    {
-                        <option value="@author.Id">@author.Name</option>
-                    }
+                     {
+                        if (author.Id == Model.AuthorId)
+                        {
+                            <option selected value="@author.Id">@author.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@author.Id">@author.Name</option>
+                        }
+                     }
+                    
+
                 </select>
                 <span asp-validation-for="AuthorId" class="text-danger"></span>
             </div>
@@ -64,19 +73,26 @@
                 <select asp-for="GenreId" class="form-control">
                     <option selected>Choose...</option>
                     @foreach (Genre genre in ViewBag.Genres)
-                    {
-                        <option value="@genre.Id">@genre.Name</option>
-                    }
+                     {
+                        if (genre.Id == Model.GenreId)
+                        {
+                            <option selected value="@genre.Id">@genre.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@genre.Id">@genre.Name</option>
+                        }
+
+                     }
                 </select>
                 <span asp-validation-for="GenreId" class="text-danger"></span>
             </div>
-
-            <button type="submit" class="btn btn-primary">Create</button>
+            <button type="submit" class="btn btn-primary">Update</button>
         </form>
     </div>
 </div>
 
-@section  Script{ 
+@section Script{
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
 }
