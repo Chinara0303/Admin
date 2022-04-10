@@ -14,8 +14,8 @@ namespace Pustok.Models
         //[Required]
         //[StringLength(255)]
         //public string Name { get; set; }
-        [Required(ErrorMessage ="Mecburidi")]
-        [StringLength(255,ErrorMessage ="Heddi  awama ay qa")]
+        [Required(ErrorMessage = "Mecburidi")]
+        [StringLength(255, ErrorMessage = "Heddi  awama ay qa")]
         public string Title { get; set; }
         //[Required]
         [StringLength(255)]
@@ -45,8 +45,10 @@ namespace Pustok.Models
         public IFormFile MainImgFile { get; set; }
         [NotMapped]
         public IFormFile HoverImgFile { get; set; }
+        [NotMapped]
+        public IFormFile[] ProductImagesFile { get; set; }
         public virtual Author Author { get; set; }
         public virtual Genre Genre { get; set; }
-        public virtual ICollection<ProductImage> ProductImages { get; set; }
+        public virtual List<ProductImage> ProductImages { get; set; }
     }
 }

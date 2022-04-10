@@ -10,7 +10,16 @@ namespace Pustok.Extensions
 {
     public static class FileExtension
     {
-       
+        public static bool CheckContentType(this IFormFile file,string contenttype)
+        {
+            return file.ContentType != contenttype;
+
+        }
+        public static bool CheckSize(this IFormFile file, double size)
+        {
+            return ((double)file.Length / 1024) > size;
+
+        }
         public async static Task<string> FileCreateAsync(this IFormFile file, IWebHostEnvironment _env, params string[] folders)
         {
             string FileName = Guid.NewGuid().ToString() + "_" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + "_" + file.FileName;

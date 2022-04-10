@@ -8,9 +8,17 @@
         <h1>Update Product</h1>
     </div>
 </div>
+<div class="row">
+    @foreach (ProductImage productImage in Model.ProductImages)
+     {
+        <div class="col-lg-3">
+            <img style="width:100%" src="~/image/products/@productImage.Name" />
+        </div>
+     }
+</div>
 <div class="row justify-content-lg-center">
     <div class="col-lg-8">
-        <form asp-action="CreateProduct">
+        <form asp-action="Update" enctype="multipart/form-data">
             <div class="form-group">
                 <label asp-for="Title"></label>
                 <input asp-for="Title" class="form-control" placeholder="Enter Title">
@@ -27,15 +35,22 @@
                 <span asp-validation-for="DiscountPrice" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="MainImage"></label>
-                <input asp-for="MainImage" class="form-control" placeholder="Enter MainImage">
-                <span asp-validation-for="MainImage" class="text-danger"></span>
+                <label asp-for="MainImgFile"></label>
+                <input asp-for="MainImgFile"  accept="image/jpeg" class="form-control" placeholder="Enter MainImgFile">
+                <span asp-validation-for="MainImgFile" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="HoverImage"></label>
-                <input asp-for="HoverImage" class="form-control" placeholder="Enter HoverImage">
-                <span asp-validation-for="HoverImage" class="text-danger"></span>
+                <label asp-for="HoverImgFile"></label>
+                <input asp-for="HoverImgFile" accept="image/jpeg" class="form-control" placeholder="Enter HoverImgFile">
+                <span asp-validation-for="HoverImgFile" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="ProductImagesFile"></label>
+                <input asp-for="ProductImagesFile" accept="image/jpeg" class="form-control" placeholder="Enter ProductImagesFile">
+                <span asp-validation-for="ProductImagesFile" class="text-danger"></span>
+            </div>
+            <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
             <div class="form-check">
                 <input asp-for="IsFeature" class="form-check-input">
                 <label class="form-check-label" asp-for="IsFeature"></label>
@@ -53,7 +68,7 @@
                 <select asp-for="AuthorId" class="form-control">
                     <option selected>Choose...</option>
                     @foreach (Author author in ViewBag.Authors)
-                     {
+                    {
                         if (author.Id == Model.AuthorId)
                         {
                             <option selected value="@author.Id">@author.Name</option>
@@ -62,8 +77,8 @@
                         {
                             <option value="@author.Id">@author.Name</option>
                         }
-                     }
-                    
+                    }
+
 
                 </select>
                 <span asp-validation-for="AuthorId" class="text-danger"></span>
@@ -73,7 +88,7 @@
                 <select asp-for="GenreId" class="form-control">
                     <option selected>Choose...</option>
                     @foreach (Genre genre in ViewBag.Genres)
-                     {
+                    {
                         if (genre.Id == Model.GenreId)
                         {
                             <option selected value="@genre.Id">@genre.Name</option>
@@ -83,7 +98,7 @@
                             <option value="@genre.Id">@genre.Name</option>
                         }
 
-                     }
+                    }
                 </select>
                 <span asp-validation-for="GenreId" class="text-danger"></span>
             </div>

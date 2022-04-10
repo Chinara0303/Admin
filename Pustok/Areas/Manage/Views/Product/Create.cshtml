@@ -26,7 +26,7 @@
                 <input asp-for="DiscountPrice" class="form-control" placeholder="Enter DiscountPrice">
                 <span asp-validation-for="DiscountPrice" class="text-danger"></span>
             </div>
-            <div class="form-group" >
+            <div class="form-group">
                 <label asp-for="MainImgFile"></label>
                 <input asp-for="MainImgFile" accept="image/jpeg" class="form-control" placeholder="Enter MainImage">
                 <span asp-validation-for="MainImgFile" class="text-danger"></span>
@@ -36,6 +36,12 @@
                 <input asp-for="HoverImgFile" accept="image/jpeg" class="form-control" placeholder="Enter HoverImage">
                 <span asp-validation-for="HoverImgFile" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="ProductImagesFile"></label>
+                <input asp-for="ProductImagesFile" accept="image/jpeg" class="form-control" placeholder="Enter ProductImagesFile">
+                <span asp-validation-for="ProductImagesFile" class="text-danger"></span>
+            </div>
+            <div class=" text-danger" style="list-style:none !important" asp-validation-summary="ModelOnly"></div>
             <div class="form-check">
                 <input asp-for="IsFeature" class="form-check-input">
                 <label class="form-check-label" asp-for="IsFeature"></label>

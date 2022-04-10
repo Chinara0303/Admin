@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pustok.DAL;
 using Pustok.Extensions;
+using Pustok.Helpers;
 using Pustok.Models;
 using System;
 using System.Collections.Generic;
@@ -71,24 +73,24 @@ namespace Pustok.Areas.Manage.Controllers
                 ModelState.AddModelError("HoverImgFile", "Sekil mutleq secilmelidir");
                 return View();
             }
-            if (product.MainImgFile.ContentType != "image/jpeg")
+            if (product.MainImgFile.CheckContentType("image/jpeg"))
             {
                 ModelState.AddModelError("MainImgFile", "Sekil novu yalniz jpeg ve ya Jpg olmalidir");
                 return View();
             }
-            if (product.HoverImgFile.ContentType != "image/jpeg")
+            if (product.HoverImgFile.CheckContentType( "image/jpeg"))
             {
                 ModelState.AddModelError("HoverImgFile", "Sekil novu yalniz jpeg ve ya Jpg olmalidir");
                 return View();
             }
 
-            if(((double)product.MainImgFile.Length / 1024) > 200)
+            if(product.MainImgFile.CheckSize(100))
             {
                 ModelState.AddModelError("MainImgFile", "Seklin olcusu 100kb-dan cox ola bilmez");
                 return View();
             }
 
-            if (((double)product.HoverImgFile.Length / 1024) > 200)
+            if (product.HoverImgFile.CheckSize(100))
             {
                 ModelState.AddModelError("HoverImgFile", "Seklin olcusu 100kb-dan cox ola bilmez");
                 return View();
@@ -98,7 +100,40 @@ namespace Pustok.Areas.Manage.Controllers
             product.MainImage = await product.MainImgFile.FileCreateAsync(_env, "image", "products");
             product.HoverImage = await product.HoverImgFile.FileCreateAsync(_env, "image", "products");
 
+            List<ProductImage> productImages = new List<ProductImage>();
 
+            if (product.ProductImagesFile != null)
+            {
+                bool error = false;
+                foreach (IFormFile productImage in product.ProductImagesFile)
+                {
+                    if (productImage.CheckContentType("image/jpeg"))
+                    {
+                        error = true;
+                        ModelState.AddModelError("", $"{productImage.FileName} novw ancaq jpg ve ya jpeg olmalidir");
+                    }
+                    if (productImage.CheckSize(100))
+                    {
+                        error=true;
+                        ModelState.AddModelError("", $"{productImage.FileName} olcusu 100kb-dan cox olmamalidir");
+                    }
+
+                    ProductImage productimage = new ProductImage 
+                    { 
+                        Name=await productImage.FileCreateAsync(_env,"image","products")
+                    };
+                    productImages.Add(productimage);
+
+
+                }
+                if (error)
+                {
+                    return View();
+                }
+                product.ProductImages = productImages;
+            }
+
+            product.CreatedAt = DateTime.UtcNow.AddHours(4);
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
 
@@ -120,7 +155,7 @@ namespace Pustok.Areas.Manage.Controllers
             
             if (id == null) return BadRequest();
 
-            Product product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted);
+            Product product = await _context.Products.Include(p=>p.ProductImages).FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted);
 
             if (product == null) return NotFound();
 
@@ -143,7 +178,7 @@ namespace Pustok.Areas.Manage.Controllers
             if (id == null) return BadRequest();
             if (id != product.Id) return BadRequest();
 
-            Product dbproduct = await _context.Products.FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted);
+            Product dbproduct = await _context.Products.Include(p=>p.ProductImages).FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted);
             if (dbproduct == null) return BadRequest();
 
 
@@ -163,46 +198,77 @@ namespace Pustok.Areas.Manage.Controllers
 
             if (product.MainImgFile != null)
             {
-                if (product.MainImgFile.ContentType != "image/jpeg")
+                if (product.MainImgFile.CheckContentType("image/jpeg"))
                 {
                     ModelState.AddModelError("MainImgFile", "Sekil novu yalniz jpeg ve ya Jpg olmalidir");
                     return View();
                 }
-                if (((double)product.MainImgFile.Length / 1024) > 100)
+                if (product.MainImgFile.CheckSize(100))
                 {
                     ModelState.AddModelError("MainImgFile", "Seklin olcusu 100kb-dan cox ola bilmez");
                     return View();
                 }
 
-                string ExistMainFilePath = Path.Combine(_env.WebRootPath, "image", "products", product.MainImage);
-                if (System.IO.File.Exists(ExistMainFilePath))
-                {
-                    System.IO.File.Delete(ExistMainFilePath);
-                }
-               
+                Helper.DeleteFile(_env, dbproduct.MainImage, "image", "products");
+
                 product.MainImage = await product.MainImgFile.FileCreateAsync(_env,"image","products");
 
-                if (product.HoverImgFile.ContentType != "image/jpeg")
-                {
-                    ModelState.AddModelError("HoverImgFile", "Sekil novu yalniz jpeg ve ya Jpg olmalidir");
-                    return View();
-                }
-
-                if (((double)product.HoverImgFile.Length / 1024) > 200)
-                {
-                    ModelState.AddModelError("HoverImgFile", "Seklin olcusu 100kb-dan cox ola bilmez");
-                    return View();
-                }
-                string ExistHoverFilePath = Path.Combine(_env.WebRootPath, "image", "products", product.HoverImage);
-                if (System.IO.File.Exists(ExistHoverFilePath))
-                {
-                    System.IO.File.Delete(ExistHoverFilePath);
-                }
-
-              
-                product.HoverImage = await product.HoverImgFile.FileCreateAsync(_env, "image","products");
+               
             }
 
+            if (product.HoverImgFile != null)
+            {
+                if (product.HoverImgFile.CheckContentType("image/jpeg"))
+                {
+                    ModelState.AddModelError("HoverImgFile", "Hover Sekil Novu Ancaq jpe ve ya jpeg Mutleq Secilmelidi");
+                    return View();
+                }
+
+                if (product.HoverImgFile.CheckSize(50))
+                {
+                    ModelState.AddModelError("HoverImgFile", "Hover Sekil 20 kb ola biler");
+                    return View();
+                }
+
+                Helper.DeleteFile(_env, dbproduct.HoverImage, "image", "products");
+
+                product.HoverImage = await product.HoverImgFile.FileCreateAsync(_env, "image", "products");
+            }
+           
+            List<ProductImage> productImages = new List<ProductImage>();
+
+            if (product.ProductImagesFile != null)
+            {
+                bool error = false;
+                foreach (IFormFile productImage in product.ProductImagesFile)
+                {
+                    if (productImage.CheckContentType("image/jpeg"))
+                    {
+                        error = true;
+                        ModelState.AddModelError("", $"{productImage.FileName} novw ancaq jpg ve ya jpeg olmalidir");
+                    }
+                    if (productImage.CheckSize(100))
+                    {
+                        error = true;
+                        ModelState.AddModelError("", $"{productImage.FileName} olcusu 100kb-dan cox olmamalidir");
+                    }
+
+                    ProductImage productimage = new ProductImage
+                    {
+                        Name = await productImage.FileCreateAsync(_env, "image", "products"),
+                        ProductId=dbproduct.Id
+                    };
+                  dbproduct.ProductImages.Add(productimage);
+
+
+                }
+                if (error)
+                {
+                    return View();
+                }
+                dbproduct.ProductImages.AddRange(productImages);
+                
+            }
             dbproduct.Title = product.Title;
             dbproduct.Author = product.Author;
             dbproduct.Genre = product.Genre;
@@ -215,7 +281,8 @@ namespace Pustok.Areas.Manage.Controllers
             dbproduct.IsArrival = product.IsArrival;
             dbproduct.IsFeature = product.IsFeature;
             dbproduct.IsMostView = product.IsMostView;
-
+            dbproduct.UpdatedAt = DateTime.UtcNow.AddHours(4);
+            product.DeletedAt = DateTime.UtcNow.AddHours(4);
 
             await _context.SaveChangesAsync();
 
@@ -242,6 +309,7 @@ namespace Pustok.Areas.Manage.Controllers
             //_context.Products.Remove(product);Databaseden de silmek ucun istifade edirik!
 
             product.IsDeleted = true;
+            product.DeletedAt = DateTime.UtcNow.AddHours(4);
 
             await _context.SaveChangesAsync();
 
