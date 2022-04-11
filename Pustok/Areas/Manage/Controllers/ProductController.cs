@@ -114,16 +114,14 @@ namespace Pustok.Areas.Manage.Controllers
                     }
                     if (productImage.CheckSize(100))
                     {
-                        error=true;
+                        error = true;
                         ModelState.AddModelError("", $"{productImage.FileName} olcusu 100kb-dan cox olmamalidir");
                     }
-
-                    ProductImage productimage = new ProductImage 
-                    { 
-                        Name=await productImage.FileCreateAsync(_env,"image","products")
+                    ProductImage productimage = new ProductImage
+                    {
+                        Name = await productImage.FileCreateAsync(_env, "image", "products")
                     };
                     productImages.Add(productimage);
-
 
                 }
                 if (error)

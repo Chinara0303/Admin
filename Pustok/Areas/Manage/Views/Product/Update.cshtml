@@ -8,11 +8,12 @@
         <h1>Update Product</h1>
     </div>
 </div>
-<div class="row">
+<div class=" row">
     @foreach (ProductImage productImage in Model.ProductImages)
      {
         <div class="col-lg-3">
-            <img style="width:100%" src="~/image/products/@productImage.Name" />
+            <img style="width:100%" src="~/image/products/@productImage.Name" alt="Alternate Text" />
+         @*   <a class="btn btn-danger" asp-action="DeleteFile" asp-route-id="@productImage.Id" id="deleteFile">Delete Image</a>*@
         </div>
      }
 </div>
@@ -36,7 +37,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="MainImgFile"></label>
-                <input asp-for="MainImgFile"  accept="image/jpeg" class="form-control" placeholder="Enter MainImgFile">
+                <input asp-for="MainImgFile" accept="image/jpeg" class="form-control" placeholder="Enter MainImgFile">
                 <span asp-validation-for="MainImgFile" class="text-danger"></span>
             </div>
             <div class="form-group">
